@@ -1,0 +1,24 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "Simple authentication project with node and passport",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Wondwosen Asegid",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mc-solo/node-auth/issues"
+  },
+  "homepage": "https://github.com/mc-solo/node-auth#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}
