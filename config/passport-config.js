@@ -1,7 +1,7 @@
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
-const users = require("../models/user");
+const initUsers = require("../models/user");
 
 passport.use(
   new localStrategy(
@@ -9,23 +9,28 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    (email, password, done) => {
-      const user = users.find((u) => u.email === email);
-      if (!user) {
-        return done(null, false, { message: "Incorrect email!" });
-      }
+    async (email, password, done) => {
+      try {
+        const users = await initUsers();
+        const user = users.find((u) => u.email === email);
 
-      bcrypt.compare(password, users.password, (error, isMatch) => {
-        if (error) {
-          return done(error);
+        if (!user) {
+          return done(null, false, { message: "Incorrect email" });
         }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
           return done(null, false, {
-            message: "Incorrect password! Please, try again",
+            message: "Incorrect password!, Please, try again",
           });
         }
+
         return done(null, user);
-      });
+      } catch (error) {
+        console.log(`Error during authentication ${error.message}`);
+        return done(null, false, { message: error.message });
+      }
     }
   )
 );
