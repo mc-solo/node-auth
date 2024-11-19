@@ -16,34 +16,38 @@ app.use(
 
 async function hashPassword(password) {
   try {
-    await bcrypt.hash(password, 10, (err, hash) => {
-      if (err) {
-        throw err;
-      }
-      return hash;
-    });
-  } catch {
-    console.error("Error hashing password!");
+    const hash = await bcrypt.hash(password, 10);
+    return hash;
+  } catch (error) {
+    console.error("Error hashing password", error);
   }
 }
+async function createUsers() {
+  const passwords = await Promise.all([
+    hashPassword("passwor123"),
+    hashPassword("123password"),
+  ]);
 
-const users = [
-  {
-    id: 1,
-    username: "Wondwosen",
-    password: hashPassword("passwor123"),
-    role: "admin",
-  },
-  {
-    id: 2,
-    username: "john",
-    pasword: hashPassword("123password"),
-    role: "user",
-  },
-];
-console.log("password for user1", users.at(0).password);
-console.log();
-console.log("password for user2", users.at(1).password);
+  const users = [
+    {
+      id: 1,
+      username: "Wondwosen",
+      password: passwords[0], // Use the resolved hash
+      role: "admin",
+    },
+    {
+      id: 2,
+      username: "john",
+      password: passwords[1],
+      role: "user",
+    },
+  ];
+
+  console.log("Password for user1:", users.at(0).password);
+  console.log("Password for user2:", users.at(1).password);
+}
+
+createUsers();
 
 app.use(express.json());
 
